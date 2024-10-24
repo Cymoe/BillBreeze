@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import {LoginLink, RegisterLink} from "@kinde-oss/kinde-auth-nextjs/components";
 
 const PricingTier = ({ name, price, features, recommended }) => (
   <div className={`bg-white rounded-lg shadow-lg overflow-hidden ${recommended ? 'border-4 border-green-500' : ''}`}>
@@ -85,12 +84,12 @@ export default function Pricing() {
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <LoginLink className="px-4 py-2 text-green-600 font-semibold hover:bg-green-50 rounded transition duration-300">
+            <Link href="/signin" className="px-4 py-2 text-green-600 font-semibold hover:bg-green-50 rounded transition duration-300">
               Sign in
-            </LoginLink>
-            <RegisterLink className="px-4 py-2 bg-green-600 text-white font-semibold rounded shadow-md hover:bg-green-700 transition duration-300">
+            </Link>
+            <Link href="/signup" className="px-4 py-2 bg-green-600 text-white font-semibold rounded shadow-md hover:bg-green-700 transition duration-300">
               Sign up
-            </RegisterLink>
+            </Link>
           </div>
         </div>
       </nav>
