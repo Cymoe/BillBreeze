@@ -12,6 +12,7 @@ export default async function Invoices() {
       <div className="p-4">
         <h1 className="text-2xl font-bold mb-4">Invoices</h1>
         
+        
         <div className="mb-8">
           <h2 className="text-xl font-bold mb-2">Create New Invoice</h2>
           <AddInvoiceForm customers={customers} products={products} />
@@ -31,8 +32,8 @@ export default async function Invoices() {
             <tbody>
               {invoices.map((invoice) => (
                 <tr key={invoice.id} className="border-b">
-                  <td>{invoice.customer.name}</td>
-                  <td>${invoice.total.toFixed(2)}</td>
+                  <td>{invoice.customer ? invoice.customer.name : 'Unknown'}</td>
+                  <td>${invoice.total ? invoice.total.toFixed(2) : '0.00'}</td>
                   <td>{new Date(invoice.createdAt).toLocaleString()}</td>
                   <td>
                     <a href={`/dashboard/invoices/${invoice.id}`} className="text-blue-500 hover:underline mr-2">View</a>

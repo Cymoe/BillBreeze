@@ -3,20 +3,42 @@
 import dbConnect from '../../lib/dbConnect';
 import { Product } from '../models/Product';
 import { Category } from '../models/Category';
+import mongoose from 'mongoose';
 
 export async function getProducts() {
   await dbConnect();
-  const products = await Product.find({}).populate('category').lean();
-  return products.map(product => ({
-    id: product._id.toString(),
-    name: product.name,
-    price: product.price,
-    category: product.category ? {
-      id: product.category._id.toString(),
-      name: product.category.name
-    } : null,
-    createdAt: product.createdAt ? product.createdAt.toISOString() : null,
-    updatedAt: product.updatedAt ? product.updatedAt.toISOString() : null
+  const products = await Product.find({}).lean();
+  
+  const categoryNames = [...new Set(products.map(p => p.category).filter(c => typeof c === 'string'))];
+  const categories = await Category.find({ name: { $in: categoryNames } }).lean();
+  const categoryMap = new Map(categories.map(c => [c.name, c._id]));
+
+  return Promise.all(products.map(async product => {
+    let categoryId = product.category;
+    let categoryName = null;
+
+    if (typeof product.category === 'string') {
+      categoryId = categoryMap.get(product.category);
+      categoryName = product.category;
+      
+      // Update the product in the database
+      await Product.findByIdAndUpdate(product._id, { category: categoryId });
+    } else if (product.category instanceof mongoose.Types.ObjectId) {
+      const category = await Category.findById(product.category).lean();
+      categoryName = category ? category.name : null;
+    }
+
+    return {
+      id: product._id.toString(),
+      name: product.name,
+      price: product.price,
+      category: categoryId ? {
+        id: categoryId.toString(),
+        name: categoryName
+      } : null,
+      createdAt: product.createdAt ? product.createdAt.toISOString() : null,
+      updatedAt: product.updatedAt ? product.updatedAt.toISOString() : null
+    };
   }));
 }
 

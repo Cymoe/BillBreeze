@@ -7,22 +7,26 @@ import { Product } from '../models/Product';
 
 export async function getInvoices() {
   await dbConnect();
-  const invoices = await Invoice.find({})
-    .populate('customerId')
-    .sort({ createdAt: -1 }) // Sort by createdAt in descending order
-    .lean();
-  
-  return invoices.map(invoice => ({
-    id: invoice._id.toString(),
-    customer: {
-      id: invoice.customerId._id.toString(),
-      name: invoice.customerId.name
-    },
-    total: invoice.total,
-    date: invoice.date.toISOString(),
-    createdAt: invoice.createdAt.toISOString(),
-    // Include other fields as needed
-  }));
+  try {
+    const invoices = await Invoice.find({})
+      .populate('customerId')
+      .sort({ createdAt: -1 })
+      .lean();
+
+    return invoices.map(invoice => ({
+      id: invoice._id.toString(),
+      customer: invoice.customerId ? {
+        id: invoice.customerId._id.toString(),
+        name: invoice.customerId.name
+      } : { id: null, name: invoice.customer || 'Unknown' },
+      total: invoice.totalAmount,
+      date: invoice.date ? invoice.date.toISOString() : null,
+      createdAt: invoice.createdAt ? invoice.createdAt.toISOString() : null,
+    }));
+  } catch (error) {
+    console.error('Error fetching invoices:', error);
+    throw error;
+  }
 }
 
 export async function getCustomersAndProducts() {
