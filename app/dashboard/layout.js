@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
 
 export default function DashboardLayout({ children }) {
   return (
@@ -9,12 +8,12 @@ export default function DashboardLayout({ children }) {
           <h1 className="text-2xl font-bold">Dashboard</h1>
         </div>
         <ul className="space-y-2 p-4">
-        <li>
+          <li>
             <Link href="/dashboard" className="block py-2 px-4 hover:bg-gray-200">
               Overview
             </Link>
           </li>
-        <li>
+          <li>
             <Link href="/dashboard/invoices" className="block py-2 px-4 hover:bg-gray-200">
               Invoices
             </Link>
@@ -31,9 +30,9 @@ export default function DashboardLayout({ children }) {
           </li>
         </ul>
         <div className="p-4">
-          <LogoutLink className="block py-2 px-4 bg-red-500 text-white rounded hover:bg-red-600">
+          <Link href="/" className="block py-2 px-4 bg-red-500 text-white rounded hover:bg-red-600">
             Log out
-          </LogoutLink>
+          </Link>
         </div>
       </nav>
       <main className="flex-1 p-8 overflow-y-auto">
@@ -42,4 +41,3 @@ export default function DashboardLayout({ children }) {
     </div>
   );
 }
-
